@@ -6,17 +6,28 @@ import java.awt.image.BufferStrategy;
 
 public class Game extends Canvas
 {
-	public static final int WIDTH = 1280;
+	public static final int WIDTH = 600;
 	public static final int HEIGHT = 720;
 	
-	public static final String WINDOW_NAME = "";
+	public static final String WINDOW_NAME = "Asteroids";
 	
 	private Handler handler;
+	private boolean isAI;
 	
-	public Game()
+	public Game(boolean isAI)
 	{
 		super();
-		handler = new Handler();
+		
+		this.isAI = isAI;
+		
+		if(isAI)
+		{
+			handler = new AIHandler();
+		}
+		else
+		{
+			handler = new HumanHandler();
+		}
 		
 		this.setFocusable(true);
 		KeyInput keyInput = new KeyInput();
@@ -25,49 +36,14 @@ public class Game extends Canvas
 		this.addKeyListener(keyInput);
 		this.addMouseListener(mouseInput);
 		
-		new Window(WIDTH, HEIGHT, WINDOW_NAME, this);
-	}
-	
-	public void run()
-	{
-		long lastTime = System.nanoTime();
-		double TickPerSecond = 60;
-		double NanosecondPerTick = 1000000000 / TickPerSecond;
-		double delta = 0;
-		long timer = System.currentTimeMillis();
-		int frames = 0;
-		
-		
-		while(true)
-		{
-			long now = System.nanoTime();
-			delta += (now - lastTime)/ NanosecondPerTick;
-			lastTime = now;
-			while(delta >= 1)
-			{
-				tick();
-				delta--;
-			}
-			
-			render();
-			
-			frames++;
-			if(System.currentTimeMillis() - timer > 1000)
-			{
-				timer += 1000;
-				System.out.println("FPS: " + frames);
-				frames = 0;
-			}
-			
-		}
 	}
 
-	private void tick() 
+	public void tick() 
 	{
 		handler.tick();
 	}
 
-	private void render() 
+	public void render() 
 	{
 		BufferStrategy bfs = this.getBufferStrategy();
 		if(bfs == null)
