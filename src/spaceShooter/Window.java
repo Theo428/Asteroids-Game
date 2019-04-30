@@ -2,6 +2,7 @@ package spaceShooter;
 
 import java.awt.Canvas;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 
 import javax.swing.JFrame;
 
@@ -13,7 +14,7 @@ public class Window extends Canvas
 	public static final int MIN_WIDTH = 1280;
 	public static final int MIN_HEIGHT = 720;
 	
-	public Window(int width, int height, String title, Game game)
+	public Window(int width, int height, String title, Game[] game)
 	{
 		JFrame frame = new JFrame(title);
 		
@@ -24,8 +25,12 @@ public class Window extends Canvas
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
+		frame.setLayout(new GridLayout(1, game.length));
 		
-		frame.add(game);
+		for(int i = 0; i < game.length; i++)
+		{
+			frame.add(game[i]);
+		}
 		
 		frame.setVisible(true);
 	}
