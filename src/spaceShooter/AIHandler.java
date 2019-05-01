@@ -34,16 +34,10 @@ public class AIHandler extends Handler
 			}
 		}
 		
-		if(!parent.isDead())
-		{
-			parent.tick();
-		}
-		
 		if(allDead)
 		{
 			parent = selectParent();
 			restart(parent);
-			System.out.println("everything died");
 			allDead = false;
 		}
 	}
@@ -67,11 +61,7 @@ public class AIHandler extends Handler
 			}
 		}
 		
-		if(!parent.isDead())
-		{
-			parent.render(graphics, true);
-		}
-		else if(!AIs.get(bestIndex).isDead())
+		if(!AIs.get(bestIndex).isDead())
 		{
 			AIs.get(bestIndex).render(graphics, true);
 		}
@@ -95,8 +85,6 @@ public class AIHandler extends Handler
 	{
 		AIs = new ArrayList<AIGame>();
 		
-		parent = new AIGame(this);
-		
 		for(int i = 0; i < AI_AMOUNT; i++)
 		{
 			AIs.add(new AIGame(this));
@@ -111,6 +99,8 @@ public class AIHandler extends Handler
 		{
 			AIs.add(new AIGame(parent));
 		}
+		
+		AIs.add(parent);
 	}
 	
 	public AIGame selectParent()
