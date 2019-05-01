@@ -1,9 +1,10 @@
-package spaceShooter.entities;
+package spaceShooter.entities.Human;
 
 import java.awt.event.KeyEvent;
 
 import spaceShooter.Handler;
 import spaceShooter.KeyInput;
+import spaceShooter.entities.Player;
 
 public class HumanPlayer extends Player
 {

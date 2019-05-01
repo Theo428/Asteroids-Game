@@ -23,7 +23,7 @@ public class AsteroidManager extends GameObject
 		
 	}
 	
-	public void tick(Player player)
+	public void tick(Player player, ScoreKeeper score)
 	{
 		if(asteroids.size() < asteroidLimit)
 		{
@@ -64,6 +64,7 @@ public class AsteroidManager extends GameObject
 			{	
 				if(asteroids.get(i).isColliding(bullets.get(x)))
 				{
+					score.IncrementScore(5);
 					player.killBullet(x);
 					if(asteroids.get(i).getTier() != 0)
 					{

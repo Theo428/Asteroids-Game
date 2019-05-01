@@ -1,9 +1,10 @@
-package spaceShooter.entities;
+package spaceShooter.entities.AI;
 
 import java.awt.event.KeyEvent;
 
 import spaceShooter.Handler;
 import spaceShooter.KeyInput;
+import spaceShooter.entities.Player;
 
 public class AIPlayer extends Player
 {
@@ -11,6 +12,13 @@ public class AIPlayer extends Player
 	public AIPlayer(Handler handler) 
 	{
 		super(handler);
+	}
+	
+	public AIPlayer(AIPlayer parent) 
+	{
+		super(parent.getHandler());
+		
+		//inherite and mutate
 	}
 	
 	public void tick()
@@ -47,5 +55,10 @@ public class AIPlayer extends Player
 		
 		tick(acceleration, shoot);
 		setAngle(getAngle() + deltaAngle);
+	}
+	
+	public void mutate()
+	{
+		
 	}
 }

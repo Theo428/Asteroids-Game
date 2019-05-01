@@ -4,30 +4,47 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import spaceShooter.entities.AsteroidManager;
-import spaceShooter.entities.HumanPlayer;
 import spaceShooter.entities.Player;
+import spaceShooter.entities.ScoreKeeper;
+import spaceShooter.entities.Human.HumanPlayer;
 
 public class HumanHandler extends Handler
 {
 	private Player player;
 	private AsteroidManager asteroids;
+	private ScoreKeeper score;
+	
+	private int tickCount = 0;
 	
 	public HumanHandler()
 	{
 		player = new HumanPlayer(this);
 		asteroids = new AsteroidManager(this);
+		score = new ScoreKeeper(this);
 	}
 	
 	public void tick()
 	{
 		player.tick();
-		asteroids.tick(player);
+		asteroids.tick(player, score);
+		score.tick();
+		
+		if(tickCount == 30)
+		{
+			score.IncrementScore(1);
+			tickCount = 0;
+		}
 		
 		if(player.isDead())
 		{
 			player = new HumanPlayer(this);
 			asteroids = new AsteroidManager(this);
+			score = new ScoreKeeper(this);
+			
+			tickCount = 0;
 		}
+		
+		tickCount++;
 	}
 	
 	public void render(Graphics graphics)
@@ -42,5 +59,11 @@ public class HumanHandler extends Handler
 		
 		player.render(graphics);
 		asteroids.render(graphics);
+		score.render(graphics);
+	}
+	
+	public void asteroidShot()
+	{
+		score.IncrementScore(10);
 	}
 }

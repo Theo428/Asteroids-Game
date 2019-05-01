@@ -2,28 +2,49 @@ package spaceShooter;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 import spaceShooter.entities.AsteroidManager;
 import spaceShooter.entities.Player;
+import spaceShooter.entities.AI.AIGame;
 
 public class AIHandler extends Handler
 {
-	private Player player;
-	private AsteroidManager asteroids;
+	private ArrayList<AIGame> AIs; 
+	private AIGame parent;
+	
+	int bestIndex = 0;
+	
+	private static final int AI_AMOUNT = 5;
 	
 	public AIHandler()
 	{
-		player = new Player(this);
-		asteroids = new AsteroidManager(this);
+		start();
 	}
 	
 	public void tick()
 	{
-		asteroids.tick(player);
-		
-		if(player.isDead())
+		boolean allDead = true;
+		for(int i = 0; i < AIs.size(); i++)
 		{
-			asteroids = new AsteroidManager(this);
+			if(!AIs.get(i).isDead())
+			{
+				AIs.get(i).tick();
+				allDead = false;
+			}
+		}
+		
+		if(!parent.isDead())
+		{
+			parent.tick();
+		}
+		
+		if(allDead)
+		{
+			parent = selectParent();
+			restart(parent);
+			System.out.println("everything died");
+			allDead = false;
 		}
 	}
 	
@@ -36,7 +57,83 @@ public class AIHandler extends Handler
 		graphics.fillRect(0, Game.HEIGHT - 3, Game.WIDTH, 3);
 		graphics.fillRect(0, 0, 3, Game.HEIGHT);
 		graphics.fillRect(Game.WIDTH - 3, 0, 3, Game.HEIGHT);
+
+
+		for(int i = 0; i < AIs.size(); i++)
+		{
+			if(!AIs.get(i).isDead())
+			{
+				AIs.get(i).render(graphics, false);
+			}
+		}
 		
-		asteroids.render(graphics);
+		if(!parent.isDead())
+		{
+			parent.render(graphics, true);
+		}
+		else if(!AIs.get(bestIndex).isDead())
+		{
+			AIs.get(bestIndex).render(graphics, true);
+		}
+		else
+		{
+			for(int i = 1; i < AIs.size(); i++)
+			{
+				if(AIs.get(bestIndex).isDead())
+				{
+					bestIndex = i;
+				}
+				else if(AIs.get(i).getScore() > AIs.get(bestIndex).getScore() && !AIs.get(i).isDead())
+				{
+					bestIndex = i;
+				}
+			}
+		}
+	}
+	
+	private void start()
+	{
+		AIs = new ArrayList<AIGame>();
+		
+		parent = new AIGame(this);
+		
+		for(int i = 0; i < AI_AMOUNT; i++)
+		{
+			AIs.add(new AIGame(this));
+		}
+	}
+	
+	private void restart(AIGame parent)
+	{
+		AIs = new ArrayList<AIGame>();
+		
+		for(int i = 0; i < AI_AMOUNT; i++)
+		{
+			AIs.add(new AIGame(parent));
+		}
+	}
+	
+	public AIGame selectParent()
+	{
+		int fitnessSum = 0;
+		
+		for(int i = 0; i < AIs.size(); i++)
+		{
+			fitnessSum += AIs.get(i).getScore();
+		}
+		
+		int selection = (int)(Math.random() * fitnessSum);
+		
+		for(int i = 0; i < AIs.size(); i++)
+		{
+			selection -= AIs.get(i).getScore();
+			
+			if(selection <= 0)
+			{
+				return AIs.get(i);
+			}
+		}
+		
+		return null;
 	}
 }
