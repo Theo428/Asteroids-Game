@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import spaceShooter.Game;
 import spaceShooter.Handler;
+import spaceShooter.entities.AI.AIPlayer;
 
 public class AsteroidManager extends GameObject
 {
@@ -25,6 +26,7 @@ public class AsteroidManager extends GameObject
 	
 	public void tick(Player player, ScoreKeeper score)
 	{
+		
 		if(asteroids.size() < asteroidLimit)
 		{
 			if(Math.random() <= spawnRate)
@@ -83,5 +85,29 @@ public class AsteroidManager extends GameObject
 		{
 			asteroids.get(i).render(graphics);
 		}
+	}
+	
+	public Asteroid getClosestAsteroid(double x, double y)
+	{
+		if(asteroids.size() == 0)
+		{
+			return null;
+		}
+		
+		int closestIndex = 0;
+		double closestDistance = Math.sqrt(Math.pow(asteroids.get(closestIndex).getX() - x, 2) + Math.pow(asteroids.get(closestIndex).getY() - y, 2));
+		
+		for(int i = 0; i < asteroids.size(); i++)
+		{
+			double distance = Math.sqrt(Math.pow(asteroids.get(i).getX() - x, 2) + Math.pow(asteroids.get(i).getY() - y, 2));
+			
+			if(closestDistance > distance)
+			{
+				closestIndex = i;
+				closestDistance = distance;
+			}
+		}
+		
+		return asteroids.get(closestIndex);
 	}
 }

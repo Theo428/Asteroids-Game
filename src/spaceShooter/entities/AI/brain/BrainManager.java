@@ -173,4 +173,9 @@ public class BrainManager extends GameObject
 		return null;
 	}
 	
+	public void mutate()
+	{
+		
+	}
+	
 }

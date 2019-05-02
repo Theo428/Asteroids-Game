@@ -69,4 +69,9 @@ public class Asteroid extends GameObject
 	{
 		return angle;
 	}
+	
+	public double getVelocity()
+	{
+		return velocity;
+	}
 }

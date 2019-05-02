@@ -21,9 +21,8 @@ public class AIGame extends GameObject
 	public AIGame(Handler handler)
 	{
 		super(handler, 0, 0, null);
-		
-		player = new AIPlayer(handler);
 		asteroids = new AsteroidManager(handler);
+		player = new AIPlayer(handler, asteroids);
 		score = new ScoreKeeper(handler);
 		gen = new GenerationDisplay(handler, 0);
 	}
@@ -32,9 +31,8 @@ public class AIGame extends GameObject
 	{
 		super(parent.getHandler(), 0, 0, null);
 		
-		player = new AIPlayer(parent.getPlayer());
-		
 		asteroids = new AsteroidManager(parent.getHandler());
+		player = new AIPlayer(parent.getPlayer(), asteroids);
 		score = new ScoreKeeper(parent.getHandler());
 		gen = new GenerationDisplay(parent.getHandler(), parent.getGerneration().getGeneration() + 1);
 	}

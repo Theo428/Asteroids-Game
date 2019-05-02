@@ -5,6 +5,8 @@ import java.awt.event.KeyEvent;
 
 import spaceShooter.Handler;
 import spaceShooter.KeyInput;
+import spaceShooter.entities.Asteroid;
+import spaceShooter.entities.AsteroidManager;
 import spaceShooter.entities.Player;
 import spaceShooter.entities.AI.brain.BrainManager;
 
@@ -21,22 +23,29 @@ public class AIPlayer extends Player
 	
 	private double[] strengths;
 	
-	public AIPlayer(Handler handler) 
+	private AsteroidManager asteroids;
+	
+	public AIPlayer(Handler handler, AsteroidManager asteroids) 
 	{
 		super(handler);
 		
-		generateRandomNetwork(4, 5);
+		generateRandomNetwork(6, 5);
 		
-		brain = new BrainManager(handler, 4, 5, nodes, connections, strengths);
+		brain = new BrainManager(handler, 6, 5, nodes, connections, strengths);
+		
+		this.asteroids = asteroids;
 	}
 	
-	public AIPlayer(AIPlayer parent) 
+	public AIPlayer(AIPlayer parent, AsteroidManager asteroids) 
 	{
 		super(parent.getHandler());
+
+		this.asteroids = asteroids;
 		
 		//inherite and mutate
 		
 		brain = parent.getBrain();
+		brain.mutate();
 	}
 	
 	public void tick()
@@ -76,7 +85,7 @@ public class AIPlayer extends Player
 		tick(acceleration, shoot);
 		setAngle(getAngle() + deltaAngle);
 		
-		double[] inputVals = {1, 1, 1, 1};
+		double[] inputVals = getInputs();
 		
 		brain.tick(inputVals);
 	}
@@ -91,11 +100,6 @@ public class AIPlayer extends Player
 	public BrainManager getBrain()
 	{
 		return brain;
-	}
-	
-	public void mutate()
-	{
-		
 	}
 	
 	private void generateRandomNetwork(int numOfInputs, int numOfOutputs)
@@ -125,10 +129,10 @@ public class AIPlayer extends Player
 		int outputID = (int)(Math.random() * (numOfInputs)) + numOfInputs;
 		
 		connections[0][0] = inputID;
-		connections[0][1] = numOfInputs + numOfInputs + 1;
+		connections[0][1] = numOfInputs + numOfInputs;
 		
 
-		connections[1][0] = numOfInputs + numOfInputs + 1;
+		connections[1][0] = numOfInputs + numOfInputs;
 		connections[1][1] = outputID;
 		
 		strengths[0] = (Math.random() * 2) - 1;
@@ -149,5 +153,50 @@ public class AIPlayer extends Player
 		connections[0][1] = outputID;
 		
 		strengths[0] = (Math.random() * 2) - 1;
+	}
+	
+	private double[] getInputs()
+	{
+
+		Asteroid closestAsteroid = asteroids.getClosestAsteroid(getX(), getY());
+		
+		double asteroidDistance;
+		double asteroidVelocity;
+		double asteroidTier;
+		double asteroidAngle;
+		
+		if(closestAsteroid != null)
+		{
+			asteroidDistance = Math.sqrt(Math.pow(closestAsteroid.getX() - getX(), 2) + Math.pow(closestAsteroid.getY() - getY(), 2));
+			asteroidVelocity = closestAsteroid.getVelocity();
+			asteroidTier = closestAsteroid.getTier();
+		
+			asteroidAngle = Math.toDegrees(Math.atan((closestAsteroid.getY() - getY()) / (closestAsteroid.getX() - getX())));
+			
+			if((closestAsteroid.getX() - getX()) < 0)
+			{
+				asteroidAngle += 180;
+			}
+			else if((closestAsteroid.getY() - getY()) < 0)
+			{
+				asteroidAngle += 360;
+			}
+		}
+		else
+		{
+			asteroidDistance = 0;
+			asteroidVelocity = 0;
+			asteroidTier = 0;
+			asteroidAngle = 0;
+		}
+		
+		double velocity = getVelocity();
+		double angle = getAngle();
+		
+		
+				
+		double[] inputs = {asteroidDistance, asteroidVelocity, asteroidTier, asteroidAngle, velocity, angle};
+		
+		return inputs;
 	}
 }
