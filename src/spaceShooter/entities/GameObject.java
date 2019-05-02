@@ -81,15 +81,6 @@ public abstract class GameObject
 			{
 				if(corners[i][1] > getSize().getMinY() && corners[i][1] < getSize().getMaxY())
 				{
-					System.out.println("true");
-
-					System.out.println(corners[i][0] + " " + corners[i][1]);
-					
-					System.out.println(getSize().getMinX() + " " + getSize().getMinY());
-					System.out.println(getSize().getMinX() + " " + getSize().getMaxY());
-					System.out.println(getSize().getMaxX() + " " + getSize().getMaxY());
-					System.out.println(getSize().getMaxX() + " " + getSize().getMinY());
-					
 					return true;
 				}
 			}

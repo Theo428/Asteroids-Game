@@ -5,14 +5,9 @@ import spaceShooter.Handler;
 public class OutputNode extends Node
 {
 	
-	public OutputNode(Handler handler, int id, int x, int y)
+	public OutputNode(Handler handler, int x, int y, int id)
 	{
-		super(handler, id, x, y);
-	}
-	
-	public void tick()
-	{
-		
+		super(handler, x, y, id);
 	}
 	
 	public boolean isOn()

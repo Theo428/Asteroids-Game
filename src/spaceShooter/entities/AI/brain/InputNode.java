@@ -5,12 +5,20 @@ import spaceShooter.Handler;
 public class InputNode extends Node
 {
 	
-	public InputNode(Handler handler, int id, int x, int y)
+	public InputNode(Handler handler, int x, int y, int id)
 	{
-		super(handler, id, x, y);
+		super(handler, x, y, id);
 	}
 	
-	public void tick(int value)
+	public void tick()
+	{
+		for(int i = 0; i < connections.size(); i++)
+		{
+			connections.get(i).tick();
+		}
+	}
+	
+	public void setValue(double value)
 	{
 		setOutput(value);
 	}

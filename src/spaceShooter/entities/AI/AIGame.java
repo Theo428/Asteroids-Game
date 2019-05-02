@@ -66,6 +66,7 @@ public class AIGame extends GameObject
 		{
 			player.render(graphics);
 			asteroids.render(graphics);
+			player.render(graphics);
 			score.render(graphics);
 			gen.render(graphics);
 		}

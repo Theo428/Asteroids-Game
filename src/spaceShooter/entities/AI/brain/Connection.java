@@ -24,9 +24,8 @@ public class Connection extends GameObject
 	
 	public void tick()
 	{
-		inputNode.tick();
-		
 		outputNode.addInput(inputNode.getOutput() * multiplier);
+		//System.out.println(outputNode.getID() + ": " + inputNode.getOutput() * multiplier);
 	}
 	
 	public void render(Graphics graphics)
@@ -40,6 +39,6 @@ public class Connection extends GameObject
 			graphics.setColor(new Color(0, (int)(255 * Math.abs(multiplier)), 0));
 		}
 		
-		graphics.drawLine((int)inputNode.getX(), (int)inputNode.getY(), (int)outputNode.getX(), (int)outputNode.getY());
+		graphics.drawLine((int)inputNode.getX() + Node.RADIUS/2, (int)inputNode.getY() + Node.RADIUS/2, (int)outputNode.getX() + Node.RADIUS/2, (int)outputNode.getY() + Node.RADIUS/2);
 	}
 }

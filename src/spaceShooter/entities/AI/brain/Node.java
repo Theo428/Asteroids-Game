@@ -10,15 +10,19 @@ import spaceShooter.entities.GameObject;
 public class Node extends GameObject
 {
 
-	private ArrayList<Connection> connections;
+	protected ArrayList<Connection> connections;
 	
 	private int id;
 	private double inputVal = 0;
 	private double output = 0;
 	
-	public Node(Handler handler, int id, int x, int y)
+	public static final int RADIUS = 20;
+	
+	public Node(Handler handler, int x, int y, int id)
 	{
 		super(handler, x, y, null);
+		
+		connections = new ArrayList<Connection>();
 		
 		this.id = id;
 	}
@@ -33,17 +37,34 @@ public class Node extends GameObject
 		{
 			output = 0;
 		}
+
+		//System.out.println(id + ": " + inputVal);
+		
+		for(int i = 0; i < connections.size(); i++)
+		{
+			connections.get(i).tick();
+		}
 		
 		resetInput();
 	}
 	
 	public void render(Graphics graphics)
 	{
-		graphics.setColor(Color.WHITE);
-		graphics.fillOval((int)getX(), (int)getY(), 5, 5);
+		for(int i = 0; i < connections.size(); i++)
+		{
+			connections.get(i).render(graphics);
+		}
 		
-		graphics.setColor(Color.GRAY);
-		graphics.drawOval((int)getX(), (int)getY(), 5, 5);
+		if(output < 1)
+		{
+			graphics.setColor(Color.RED);
+		}
+		else
+		{
+			graphics.setColor(Color.GREEN);
+		}
+		
+		graphics.fillOval((int)getX(), (int)getY(), RADIUS, RADIUS);
 	}
 	
 	public void resetInput()
@@ -61,6 +82,11 @@ public class Node extends GameObject
 		inputVal += val;
 	}
 	
+	public int getID()
+	{
+		return id;
+	}
+	
 	protected void setOutput(double output)
 	{
 		this.output = output;
@@ -70,4 +96,5 @@ public class Node extends GameObject
 	{
 		connections.add(new Connection(getHandler(), this, outputNode, strength));
 	}
+
 }
