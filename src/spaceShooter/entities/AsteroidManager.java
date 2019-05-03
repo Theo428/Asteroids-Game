@@ -64,7 +64,7 @@ public class AsteroidManager extends GameObject
 			
 			for(int x = 0; x < bullets.size(); x++)
 			{	
-				if(asteroids.get(i).isColliding(bullets.get(x)))
+				if(asteroids.get(i).isColliding(bullets.get(x)) || bullets.get(x).isColliding(asteroids.get(i)))
 				{
 					score.IncrementScore(5);
 					player.killBullet(x);

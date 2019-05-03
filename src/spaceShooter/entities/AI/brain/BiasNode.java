@@ -10,7 +10,7 @@ public class BiasNode extends InputNode
 	
 	public BiasNode(Handler handler, int x, int y)
 	{
-		super(handler, x, y, -1);
+		super(handler, x, y, 0);
 	}
 	
 	public void render(Graphics graphics)

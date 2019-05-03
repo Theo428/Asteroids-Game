@@ -2,6 +2,7 @@ package spaceShooter.entities.AI;
 
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 import spaceShooter.Handler;
 import spaceShooter.KeyInput;
@@ -18,34 +19,32 @@ public class AIPlayer extends Player
 	private boolean[] outputs;
 	private double[] inputVals;
 	
-	private int[] nodes;
-	private int[][] connections;
+	private int[] nodes = {};
+	private int[][] connections = {};
 	
-	private double[] strengths;
+	private double[] strengths = {};
 	
 	private AsteroidManager asteroids;
+	
+	public static final int numOfInputs = 6;
+	public static final int numOfOutputs = 6;
 	
 	public AIPlayer(Handler handler, AsteroidManager asteroids) 
 	{
 		super(handler);
 		
-		generateRandomNetwork(6, 5);
-		
-		brain = new BrainManager(handler, 6, 5, nodes, connections, strengths);
+		brain = new BrainManager(handler, numOfInputs, numOfOutputs, nodes, connections, strengths);
 		
 		this.asteroids = asteroids;
 	}
 	
-	public AIPlayer(AIPlayer parent, AsteroidManager asteroids) 
+	public AIPlayer(AIPlayer parent, AsteroidManager asteroids, boolean mutate) 
 	{
 		super(parent.getHandler());
 
 		this.asteroids = asteroids;
 		
 		//inherite and mutate
-		
-		brain = parent.getBrain();
-		brain.mutate();
 	}
 	
 	public void tick()
@@ -85,7 +84,7 @@ public class AIPlayer extends Player
 		tick(acceleration, shoot);
 		setAngle(getAngle() + deltaAngle);
 		
-		double[] inputVals = getInputs();
+		inputVals = getInputs();
 		
 		brain.tick(inputVals);
 	}
@@ -96,64 +95,7 @@ public class AIPlayer extends Player
 		
 		brain.render(graphics);
 	}
-	
-	public BrainManager getBrain()
-	{
-		return brain;
-	}
-	
-	private void generateRandomNetwork(int numOfInputs, int numOfOutputs)
-	{
-		int generatedItem = (int)(Math.random() * 2);
-		
-		if(generatedItem == 0)
-		{
-			generateNode(numOfInputs, numOfOutputs);
-		}
-		else 
-		{
-			generateConnection(numOfInputs, numOfOutputs);
-		}
-	}
-	
-	private void generateNode(int numOfInputs, int numOfOutputs)
-	{
-		nodes = new int[1];
-		connections = new int[2][2];
-		
-		strengths = new double[2];
-		
-		nodes[0] = 1;
-		
-		int inputID = (int)(Math.random() * (numOfInputs + 1)) - 1;
-		int outputID = (int)(Math.random() * (numOfInputs)) + numOfInputs;
-		
-		connections[0][0] = inputID;
-		connections[0][1] = numOfInputs + numOfInputs;
-		
 
-		connections[1][0] = numOfInputs + numOfInputs;
-		connections[1][1] = outputID;
-		
-		strengths[0] = (Math.random() * 2) - 1;
-		strengths[1] = (Math.random() * 2) - 1;
-	}
-	
-	private void generateConnection(int numOfInputs, int numOfOutputs)
-	{
-		nodes = new int[0];
-		connections = new int[1][2];
-		
-		strengths = new double[1];
-
-		int inputID = (int)(Math.random() * (numOfInputs + 1)) - 1;
-		int outputID = (int)(Math.random() * (numOfInputs)) + numOfInputs;
-		
-		connections[0][0] = inputID;
-		connections[0][1] = outputID;
-		
-		strengths[0] = (Math.random() * 2) - 1;
-	}
 	
 	private double[] getInputs()
 	{
@@ -198,5 +140,40 @@ public class AIPlayer extends Player
 		double[] inputs = {asteroidDistance, asteroidVelocity, asteroidTier, asteroidAngle, velocity, angle};
 		
 		return inputs;
+	}
+
+	public int[] getNodes() 
+	{
+		return nodes;
+	}
+
+	public void setNodes(int[] nodes) 
+	{
+		this.nodes = nodes;
+	}
+
+	public int[][] getConnections() 
+	{
+		return connections;
+	}
+
+	public void setConnections(int[][] connections) 
+	{
+		this.connections = connections;
+	}
+
+	public double[] getStrengths() 
+	{
+		return strengths;
+	}
+
+	public void setStrengths(double[] strengths) 
+	{
+		this.strengths = strengths;
+	}
+	
+	public BrainManager getBrain()
+	{
+		return brain;
 	}
 }

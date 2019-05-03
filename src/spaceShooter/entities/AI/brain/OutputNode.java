@@ -9,9 +9,4 @@ public class OutputNode extends Node
 	{
 		super(handler, x, y, id);
 	}
-	
-	public boolean isOn()
-	{
-		return getOutput() >= 1;
-	}
 }

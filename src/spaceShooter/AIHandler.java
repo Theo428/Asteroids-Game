@@ -15,7 +15,7 @@ public class AIHandler extends Handler
 	
 	int bestIndex = 0;
 	
-	private static final int AI_AMOUNT = 5;
+	private static final int AI_AMOUNT = 50;
 	
 	public AIHandler()
 	{
@@ -97,10 +97,12 @@ public class AIHandler extends Handler
 		
 		for(int i = 0; i < AI_AMOUNT; i++)
 		{
-			AIs.add(new AIGame(parent));
+			AIs.add(new AIGame(parent, true));
 		}
 		
-		AIs.add(parent);
+		AIs.add(new AIGame(parent, false));
+		
+		bestIndex = 0;
 	}
 	
 	public AIGame selectParent()

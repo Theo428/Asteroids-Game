@@ -17,9 +17,4 @@ public class InputNode extends Node
 			connections.get(i).tick();
 		}
 	}
-	
-	public void setValue(double value)
-	{
-		setOutput(value);
-	}
 }

@@ -37,8 +37,6 @@ public class Node extends GameObject
 		{
 			output = 0;
 		}
-
-		//System.out.println(id + ": " + inputVal);
 		
 		for(int i = 0; i < connections.size(); i++)
 		{
@@ -95,6 +93,11 @@ public class Node extends GameObject
 	public void addConnection(Node outputNode, double strength)
 	{
 		connections.add(new Connection(getHandler(), this, outputNode, strength));
+	}
+	
+	public boolean isOn()
+	{
+		return getOutput() >= 1;
 	}
 
 }

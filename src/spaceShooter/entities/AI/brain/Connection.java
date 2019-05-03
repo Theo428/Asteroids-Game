@@ -25,7 +25,6 @@ public class Connection extends GameObject
 	public void tick()
 	{
 		outputNode.addInput(inputNode.getOutput() * multiplier);
-		//System.out.println(outputNode.getID() + ": " + inputNode.getOutput() * multiplier);
 	}
 	
 	public void render(Graphics graphics)

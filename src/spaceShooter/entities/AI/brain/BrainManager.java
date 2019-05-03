@@ -10,9 +10,6 @@ import spaceShooter.entities.GameObject;
 
 public class BrainManager extends GameObject
 {
-	private ArrayList<InputNode> inputs;
-	private ArrayList<OutputNode> outputs;
-	
 	private ArrayList<ArrayList<Node>> nodes;
 	
 	public static final double TOP_PERCENTAGE = .025;
@@ -29,29 +26,34 @@ public class BrainManager extends GameObject
 		
 		nodes = new ArrayList<ArrayList<Node>>();
 		
-		int nodeID = 0;
+		int nodeID = -numOfInputs - numOfOutputs;
 		
-		inputs = new ArrayList<InputNode>();
+		//add inputs to node array
+		nodes.add(new ArrayList<Node>());
 		
 		for(int i = 0; i < numOfInputs; i++)
 		{
-			inputs.add(new InputNode(handler, (int)getX(), (int)(getY() + ((getSize().getHeight() / numOfInputs)/2) + (i * (getSize().getHeight() / numOfInputs - 1))), nodeID));
+			nodes.get(0).add(new InputNode(handler, (int)getX(), (int)(getY() + ((getSize().getHeight() / numOfInputs)/2) + (i * (getSize().getHeight() / numOfInputs - 1))), nodeID));
 			nodeID++;
 		}
 		
-		inputs.add(new BiasNode(handler, (int)getX() + 20, (int)getY() + (int)getSize().getHeight() + 10));
+		nodes.get(0).add(new BiasNode(handler, (int)getX() + 20, (int)getY() + (int)getSize().getHeight() + 10));
 		
-		outputs = new ArrayList<OutputNode>();
+		nodeID++;
+
+		//add outputs to node array
+		nodes.add(new ArrayList<Node>());
 		
 		for(int i = 0; i < numOfOutputs; i++)
 		{
-			outputs.add(new OutputNode(handler, (int)(getX() + getSize().getWidth()), (int)(getY() + ((getSize().getHeight() / numOfOutputs)/2) + (i * (getSize().getHeight() / numOfOutputs))), nodeID));
+			nodes.get(1).add(new OutputNode(handler, (int)(getX() + getSize().getWidth()), (int)(getY() + ((getSize().getHeight() / numOfOutputs)/2) + (i * (getSize().getHeight() / numOfOutputs))), nodeID));
 			nodeID++;
 		}
 		
+		//add all other nodes
 		for(int i = 0; i < nodesPerColumn.length; i++)
 		{
-			nodes.add(new ArrayList<Node>());
+			nodes.add(nodes.size() - 2, new ArrayList<Node>());
 			
 			for(int j = 0; j < nodesPerColumn[i]; j++)
 			{
@@ -60,6 +62,7 @@ public class BrainManager extends GameObject
 			}
 		}
 		
+		//add connections
 		for(int i = 0; i < connections.length; i++)
 		{
 			getNodeByID(connections[i][0]).addConnection(getNodeByID(connections[i][1]), connectionStrengths[i]);
@@ -69,7 +72,7 @@ public class BrainManager extends GameObject
 	
 	public void tick()
 	{
-		double[] inputVals = new double[inputs.size()];
+		double[] inputVals = new double[nodes.get(0).size()];
 		
 		for(int i = 0; i < inputVals.length; i++)
 		{
@@ -81,16 +84,13 @@ public class BrainManager extends GameObject
 	
 	public void tick(double[] inputVals)
 	{
-		for(int i = 0; i < inputs.size() - 1; i++)
+		//set input values
+		for(int i = 0; i < nodes.get(0).size() - 1; i++)
 		{
-			inputs.get(i).setValue(inputVals[i]);
+			nodes.get(0).get(i).setOutput(inputVals[i]);
 		}
-		
-		for(int i = 0; i < inputs.size(); i++)
-		{
-			inputs.get(i).tick();
-		}
-		
+
+		//tick nodes in order
 		for(int i = 0; i < nodes.size(); i++)
 		{
 			
@@ -100,20 +100,11 @@ public class BrainManager extends GameObject
 			}
 		}
 		
-		for(int i = 0; i < outputs.size(); i++)
-		{
-			outputs.get(i).tick();
-		}
-		
 	}
 	
 	public void render(Graphics graphics)
 	{
-		for(int i = 0; i < inputs.size(); i++)
-		{
-			inputs.get(i).render(graphics);
-		}
-		
+		//render nodes
 		for(int i = 0; i < nodes.size(); i++)
 		{
 			
@@ -122,20 +113,15 @@ public class BrainManager extends GameObject
 				nodes.get(i).get(j).render(graphics);
 			}
 		}
-		
-		for(int i = 0; i < outputs.size(); i++)
-		{
-			outputs.get(i).render(graphics);
-		}
 	}
 	
 	public boolean[] getOutputs()
 	{
-		boolean[] outputVals = new boolean[outputs.size()];
+		boolean[] outputVals = new boolean[nodes.get(nodes.size() - 1).size()];
 		
-		for(int i = 0; i < outputs.size(); i++)
+		for(int i = 0; i < nodes.get(nodes.size() - 1).size(); i++)
 		{
-			outputVals[i] = outputs.get(i).isOn();
+			outputVals[i] = nodes.get(nodes.size() - 1).get(i).isOn();
 		}
 		
 		return outputVals;
@@ -154,28 +140,7 @@ public class BrainManager extends GameObject
 			}
 		}
 		
-		for(int i = 0; i < inputs.size(); i++)
-		{
-			if(inputs.get(i).getID() == id)
-			{
-				return inputs.get(i);
-			}
-		}
-		
-		for(int i = 0; i < outputs.size(); i++)
-		{
-			if(outputs.get(i).getID() == id)
-			{
-				return outputs.get(i);
-			}
-		}
-		
 		return null;
-	}
-	
-	public void mutate()
-	{
-		
 	}
 	
 }

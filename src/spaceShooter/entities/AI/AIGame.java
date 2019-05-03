@@ -27,12 +27,12 @@ public class AIGame extends GameObject
 		gen = new GenerationDisplay(handler, 0);
 	}
 	
-	public AIGame(AIGame parent)
+	public AIGame(AIGame parent, boolean mutate)
 	{
 		super(parent.getHandler(), 0, 0, null);
 		
 		asteroids = new AsteroidManager(parent.getHandler());
-		player = new AIPlayer(parent.getPlayer(), asteroids);
+		player = new AIPlayer(parent.getPlayer(), asteroids, mutate);
 		score = new ScoreKeeper(parent.getHandler());
 		gen = new GenerationDisplay(parent.getHandler(), parent.getGerneration().getGeneration() + 1);
 	}
